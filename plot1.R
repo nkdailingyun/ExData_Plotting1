@@ -1,0 +1,11 @@
+library(downloader)
+library(plyr)
+download(url="https://archive.ics.uci.edu/ml/machine-learning-databases/00235/household_power_consumption.zip", dest="dataset.zip", mode="wb") 
+unzip ("dataset.zip", exdir = "./")
+data<-read.table("household_power_consumption.txt", header=TRUE, sep=";", na.strings="?", nrow=100000)
+subdata<-droplevels(subset(data, Date %in% c("1/2/2007","2/2/2007")))
+subdata<-mutate(subdata, DateTime=strptime(paste(Date, Time, sep=" "), "%d/%m/%Y %H:%M:%S"))
+subdata<-subdata[, -c(1:2)]
+png(filename="plot1.png", width=480, height=480, units="px")
+hist(subdata$Global_active_power, col="red", main="Global Active Power", xlab="Global Active Power(kilowatts)")
+dev.off()

@@ -1,0 +1,12 @@
+library(plyr)
+# given after plot1 exercise, the raw data file has been downloaded and unzipped into working directory
+data<-read.table("household_power_consumption.txt", header=TRUE, sep=";", na.strings="?", nrow=100000)
+subdata<-droplevels(subset(data, Date %in% c("1/2/2007","2/2/2007")))
+subdata<-mutate(subdata, DateTime=strptime(paste(Date, Time, sep=" "), "%d/%m/%Y %H:%M:%S"))
+subdata<-subdata[, -c(1:2)]
+png(filename="plot3.png", width=480, height=480, units="px")
+plot(subdata$DateTime, subdata$Sub_metering_1, xlab="", ylab="Energy sub metering", type="l", col="black")
+lines(subdata$DateTime, subdata$Sub_metering_2, col="red")
+lines(subdata$DateTime, subdata$Sub_metering_3, col="blue")
+legend("topright", lty=1, col=c("black", "blue", "red"), legend=c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"))
+dev.off()
